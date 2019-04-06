@@ -1,0 +1,61 @@
+version: '2'
+services:
+  nginx:
+    container_name: docker-magento_nginx
+    image: nginx:latest
+    ports:
+     - "80:80"
+    volumes:
+     - ./nginx_conf/nginx.conf:/etc/nginx/conf.d/default.conf
+     - ../paperview-magento:/usr/share/nginx/www
+    networks:
+      service1_net:
+        ipv4_address: 172.22.0.102
+
+  php:
+    container_name: docker-magento_php
+    build: 
+      context: .
+      dockerfile: ./php/Dockerfile    
+    volumes:
+     - ../paperview-magento:/usr/share/nginx/www
+    networks:
+      service1_net:
+        ipv4_address: 172.22.0.104
+
+  db:
+    container_name: docker-magento_mysql
+    image: mariadb:latest
+    environment:
+      MYSQL_DATABASE: 'magento'
+      MYSQL_USER: 'magento'
+      MYSQL_PASSWORD: 'magento'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    networks:
+      service1_net:
+        ipv4_address: 172.22.0.108
+
+  redis:
+    container_name: docker-magento_redis
+    image: redis
+    ports:
+      - 6379
+    networks:
+      service1_net:
+        ipv4_address: 172.22.0.109
+
+  mail:
+    container_name: docker-magento_mailhog
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+    networks:
+      service1_net:
+        ipv4_address: 172.22.0.110
+
+networks:
+  service1_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.0.0/16
