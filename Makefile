@@ -12,6 +12,9 @@ BASE_URL=http://project.com/
 LOCAL_XML=../$(DOCKER_DIR)/etc/local.xml
 LOCAL_XML_TO=/usr/share/nginx/www/app/etc/local.xml
 
+MAGERUN=n98-magerun.phar
+MAGERUN_TO=/usr/local/bin/n98-magerun.phar
+
 MYSQL_DOCKER=docker-magento_mysql
 MYSQL_DUMP_FILE=project.sql
 MYSQL_DUMP_FILE_DIR=../mysql_dump
@@ -40,6 +43,8 @@ start:
 	docker-compose up -d
 
 install:
+	make clone_repo
+	make start
 	make import_db
 	make create_localxml
 	make update_baseurl
@@ -49,7 +54,6 @@ install:
 # 	sudo docker exec -ti $(NGINX_DOCKER) sh -c "curl -O https://files.magerun.net/n98-magerun.phar"
 # 	sudo docker exec -ti $(NGINX_DOCKER) sh -c "chmod +x ./n98-magerun.phar"
 # 	sudo docker exec -ti $(NGINX_DOCKER) sh -c "sudo cp ./n98-magerun.phar /usr/local/bin/"
-
 
 
 
