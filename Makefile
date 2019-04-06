@@ -13,7 +13,7 @@ LOCAL_XML=../$(DOCKER_DIR)/etc/local.xml
 LOCAL_XML_TO=/usr/share/nginx/www/app/etc/local.xml
 
 MAGERUN=n98-magerun.phar
-MAGERUN_TO=/usr/local/bin/n98-magerun.phar
+MAGERUN_TO=/usr/local/bin
 
 MYSQL_DOCKER=docker-magento_mysql
 MYSQL_DUMP_FILE=project.sql
@@ -40,7 +40,15 @@ clone_repo:
 	git clone $(GIT_REPO) ../paperview-magento
 
 start:
-	docker-compose up -d
+	sudo docker-compose up -d
+
+magerun_create_admin: stop
+	sudo docker exec -ti docker-magento_nginx sh -c "cd /usr/share/nginx/www; n98-magerun.phar admin:user:create"
+
+install_magerun:
+	sudo docker cp bin/n98-magerun.phar docker-magento_nginx:/usr/share/nginx/www/n98-magerun.phar;
+	sudo docker exec -ti docker-magento_nginx sh -c "apt-get update; apt-get install -y php php-mysql php-xml;"
+	sudo docker cp bin/$(MAGERUN) $(NGINX_DOCKER):$(MAGERUN_TO)/$(MAGERUN);
 
 install:
 	make clone_repo
@@ -48,6 +56,7 @@ install:
 	make import_db
 	make create_localxml
 	make update_baseurl
+	make install_magerun
 
 # install_magerun:
 # 	sudo docker exec -ti $(NGINX_DOCKER) sh -c "apt-get install; apt-get install curl;"
