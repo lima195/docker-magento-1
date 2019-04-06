@@ -17,8 +17,7 @@ RUN docker-php-ext-install intl
 
 RUN apt-get install -y curl
 
-COPY ./bin/init-baseurl /usr/local/bin/
-COPY ./bin/n98-magerun.phar /usr/local/bin/
+COPY ./bin/* /usr/local/bin/
 
 COPY ./etc/ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf 
 # WORKDIR /usr/share/nginx/www
