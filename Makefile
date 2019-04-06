@@ -33,6 +33,13 @@ import_db:
 	sudo docker cp $(MYSQL_DUMP_FILE_DIR)/$(MYSQL_DUMP_FILE) $(MYSQL_DOCKER):/$(MYSQL_DUMP_FILE);
 	sudo docker exec -ti $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) < /$(MYSQL_DUMP_FILE) -P $(MYSQL_PORT)"
 
+import_db_install_pv:
+	sudo docker exec -ti $(MYSQL_DOCKER) sh -c "apt-get update; apt-get install -y pv"
+	
+import_db_pv:
+	sudo docker cp $(MYSQL_DUMP_FILE_DIR)/$(MYSQL_DUMP_FILE) $(MYSQL_DOCKER):/$(MYSQL_DUMP_FILE);
+	sudo docker exec -ti $(MYSQL_DOCKER) sh -c "pv $(MYSQL_DUMP_FILE) | mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) -P $(MYSQL_PORT) $(MYSQL_DB_NAME)"
+
 create_localxml:
 	sudo docker cp $(LOCAL_XML) $(NGINX_DOCKER):/$(LOCAL_XML_TO);
 
@@ -54,7 +61,8 @@ install_magerun:
 install:
 	make clone_repo
 	make start
-	make import_db
+	make import_db_install_pv
+	make import_db_pv
 	make create_localxml
 	make update_baseurl
 	make install_magerun
