@@ -43,7 +43,7 @@ start:
 	sudo docker-compose up -d
 
 magerun_create_admin: stop
-	sudo docker exec -ti docker-magento_nginx sh -c "cd /usr/share/nginx/www; n98-magerun.phar admin:user:create"
+	sudo docker exec -ti docker-magento_nginx sh -c "cd /usr/share/nginx/www/; n98-magerun.phar admin:user:create"
 
 install_magerun:
 	sudo docker cp bin/n98-magerun.phar docker-magento_nginx:/usr/share/nginx/www/n98-magerun.phar;
