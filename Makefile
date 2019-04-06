@@ -49,6 +49,7 @@ install_magerun:
 	sudo docker cp bin/n98-magerun.phar docker-magento_nginx:/usr/share/nginx/www/n98-magerun.phar;
 	sudo docker exec -ti docker-magento_nginx sh -c "apt-get update; apt-get install -y php php-mysql php-xml;"
 	sudo docker cp bin/$(MAGERUN) $(NGINX_DOCKER):$(MAGERUN_TO)/$(MAGERUN);
+	sudo docker cp bin/$(MAGERUN) $(NGINX_DOCKER):/usr/share/nginx/www/$(MAGERUN);
 
 install:
 	make clone_repo
