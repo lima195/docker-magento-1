@@ -3,11 +3,11 @@
 
 GIT_REPO=git@104.237.3.212:paperview/paperview-magento.git
 
-DOCKER_DIR=docker-magento-1
+MYSQL_DUMP_FILE=imotopecas.sql
+BASE_URL=http://www.imotopecas.localhost/
 
 NGINX_DOCKER=docker-magento_nginx
-
-BASE_URL=http://project.com/
+DOCKER_DIR=docker
 
 LOCAL_XML=../$(DOCKER_DIR)/etc/magento/app/etc/local.xml
 LOCAL_XML_TO=/usr/share/nginx/www/app/etc/local.xml
@@ -16,7 +16,6 @@ MAGERUN=n98-magerun.phar
 MAGERUN_TO=/usr/local/bin
 
 MYSQL_DOCKER=docker-magento_mysql
-MYSQL_DUMP_FILE=project.sql
 MYSQL_DUMP_FILE_DIR=../mysql_dump
 MYSQL_USER=magento
 MYSQL_PASS=magento
@@ -35,7 +34,7 @@ import_db:
 
 import_db_install_pv:
 	sudo docker exec -ti $(MYSQL_DOCKER) sh -c "apt-get update; apt-get install -y pv"
-	
+
 import_db_pv:
 	sudo docker cp $(MYSQL_DUMP_FILE_DIR)/$(MYSQL_DUMP_FILE) $(MYSQL_DOCKER):/$(MYSQL_DUMP_FILE);
 	sudo docker exec -ti $(MYSQL_DOCKER) sh -c "pv $(MYSQL_DUMP_FILE) | mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) -P $(MYSQL_PORT) $(MYSQL_DB_NAME)"

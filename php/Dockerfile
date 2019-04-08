@@ -1,5 +1,6 @@
 FROM php:7.1-fpm
 
+RUN usermod -u 1000 www-data
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV GOPATH /root/gocode
