@@ -9,7 +9,7 @@ NGINX_DOCKER=docker-magento_nginx
 
 BASE_URL=http://project.com/
 
-LOCAL_XML=../$(DOCKER_DIR)/etc/local.xml
+LOCAL_XML=../$(DOCKER_DIR)/etc/magento/app/etc/local.xml
 LOCAL_XML_TO=/usr/share/nginx/www/app/etc/local.xml
 
 MAGERUN=n98-magerun.phar
