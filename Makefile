@@ -66,6 +66,10 @@ install:
 	make update_baseurl
 	make install_magerun
 
+drop_all_tables:
+	sudo docker exec -ti $(MYSQL_DOCKER) sh -c "mysqldump --add-drop-table --no-data -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) -P $(MYSQL_PORT) | grep 'DROP TABLE' ) > ../mysql_dump/drop_all_tables.sql"
+	sudo docker exec -ti $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) < ../mysql_dump/drop_all_tables.sql -P $(MYSQL_PORT)"
+
 # install_magerun:
 # 	sudo docker exec -ti $(NGINX_DOCKER) sh -c "apt-get install; apt-get install curl;"
 # 	sudo docker exec -ti $(NGINX_DOCKER) sh -c "curl -O https://files.magerun.net/n98-magerun.phar"
