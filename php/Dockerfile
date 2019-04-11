@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         wget \
         vim \
         git \
+        apt-utils \
         unzip
 
 # Install PHP extensions deps

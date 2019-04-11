@@ -48,6 +48,8 @@ default:
 	@echo " - make magento_magerun_install"
 	@echo " - make magento_magerun_create_admin"
 	@echo " - make magento_cron_setup"
+	@echo " - make magento_clear_cache"
+	@echo " - make magento_set_permissions"
 	@echo " "
 	@echo " == Docker =="
 	@echo " - make install_cron"
@@ -98,13 +100,19 @@ magento_magerun_install:
 magento_magerun_create_admin:
 	sudo docker exec -it $(NGINX_DOCKER) sh -c "cd $(NGINX_WEB_ROOT)/; $(MAGENTO_MAGERUN) admin:user:create"
 
+magento_clear_cache:
+	sudo docker exec -it $(NGINX_DOCKER) sh -c "cd $(NGINX_WEB_ROOT); rm -rf var/cache/*; rm -rf var/session/*;"
+
+magento_set_permissions:
+	sudo docker exec -it $(NGINX_DOCKER) sh -c "chown 1000:1000 $(NGINX_WEB_ROOT)/ -R; chmod 777 -R $(NGINX_WEB_ROOT)/var/ $(NGINX_WEB_ROOT)/media/"
+
 magento_cron_setup:
 	@echo "Write this:"
 	@echo "*/5 * * * * sh $(NGINX_WEB_ROOT)/cron.sh >/dev/null 2>&1"
 	sudo docker exec -it $(NGINX_DOCKER) sh -c "crontab -e"
 
 install_cron:
-	sudo docker exec -it $(NGINX_DOCKER) sh -c "apt-get update; apt-get install cron; apt-get install vim; export VISUAL=vim;"
+	sudo docker exec -it $(NGINX_DOCKER) sh -c "apt-get update; apt-get install -y cron; apt-get install -y vim; export VISUAL=vim;"
 
 docker_up:
 	sudo docker-compose up -d
@@ -113,6 +121,7 @@ setup_magento:
 	make magento_update_baseurl
 	make magento_create_localxml
 	make magento_magerun_install
+	make magento_set_permissions
 	make magento_magerun_create_admin
 	make magento_cron_setup
 
@@ -120,6 +129,7 @@ install:
 	make docker_up
 	make db_install_pv
 	make db_import_pv
+	make install_cron
 	make setup_magento
 
 PHONY: \
@@ -134,5 +144,7 @@ PHONY: \
 	magento_cron_setup \
 	install_cron \
 	docker_up \
+	magento_clear_cache \
+	magento_set_permissions \
 	install \
 	setup_magento
