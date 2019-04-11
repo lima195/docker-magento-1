@@ -16,6 +16,7 @@ services:
       - db
       - php:docker-magento_php
       - mail
+      - redis
     depends_on:
       - php
     networks:
