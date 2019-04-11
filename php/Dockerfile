@@ -1,4 +1,4 @@
-FROM php:7.1-fpm
+FROM php:7.0-fpm
 
 RUN usermod -u 1000 www-data
 ARG DEBIAN_FRONTEND=noninteractive
@@ -50,6 +50,7 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
             pdo_mysql \
             soap \
             zip \
+            xmlrpc \
     		&& docker-php-ext-enable \
             redis \
             memcached \

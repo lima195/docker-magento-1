@@ -12,10 +12,15 @@ services:
         ipv4_address: 172.22.0.102
     ports:
       - 80:80
+      - 443:443
+    expose:
+      - 443
     links:
-        - db
-        - php
-        - mail
+      - db
+      - php:docker-magento_php
+      - mail
+    depends_on:
+      - php
 
   php:
     container_name: docker-magento_php
