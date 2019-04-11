@@ -1,4 +1,4 @@
-FROM php:7.0-fpm
+FROM php:7.1-fpm
 
 RUN usermod -u 1000 www-data
 ARG DEBIAN_FRONTEND=noninteractive
