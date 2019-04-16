@@ -123,7 +123,7 @@ setup_magento:
 	make magento_magerun_install
 	make magento_set_permissions
 	make magento_magerun_create_admin
-	make magento_cron_setup
+# 	make magento_cron_setup
 
 install:
 	make docker_up

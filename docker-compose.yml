@@ -35,6 +35,9 @@ services:
     networks:
       project_net:
         ipv4_address: 172.22.0.104
+    # environment:
+    #   XDEBUG_CONFIG: remote_host=172.22.0.104 #docker network ip.
+    #   PHP_IDE_CONFIG: "serverName=xdebug-docker" #phpstorm variavel de ambiente com o nome do server configurado.
 
   db:
     container_name: docker-magento_mysql
