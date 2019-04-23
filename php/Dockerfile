@@ -67,21 +67,30 @@ RUN pecl install apcu \
 RUN wget https://phar.phpunit.de/phpunit.phar -O /usr/local/bin/phpunit \
     && chmod +x /usr/local/bin/phpunit
 
+# Install Xdebug
+RUN apt-get update \
+    && pecl install -f xdebug \
+    && docker-php-ext-enable xdebug \
+    # && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so" > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_connect_back=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.idekey=docker" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_host=10.10.17.142" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # Mailhog
 RUN apt-get update && apt-get install -q -y ssmtp mailutils && rm -rf /var/lib/apt/lists/*
 RUN apt-get update
 RUN apt-get install -y golang-go
 RUN echo $HOME
 RUN mkdir $HOME/gocode
-# RUN echo "export GOPATH=\$HOME/gocode" >> ~/.profile
 RUN echo "export GOPATH=/root/gocode" >> ~/.profile
 RUN /bin/bash -c "source ~/.profile"
 RUN go get github.com/mailhog/MailHog
 RUN go get github.com/mailhog/mhsendmail
-# RUN wget https://github.com/mailhog/MailHog/releases/download/v0.2.1/MailHog_linux_amd64
-# RUN cp MailHog_linux_amd64 /usr/bin/mailhog
 ENV GOPATH $HOME/gocode
-# RUN ln $GOPATH/bin/mhsendmail /usr/local/bin/mhsendmail
 RUN ln /root/gocode/bin/mhsendmail /usr/local/bin/mail
 RUN ln /root/gocode/bin/mhsendmail /usr/local/bin/sendmail
 RUN ln /root/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
@@ -95,23 +104,8 @@ COPY ./etc/ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf
 # php -r "\$from = \$to = 'your.emailaddress@gmail.com'; \$x = mail(\$to, 'subject'.time(), 'Hello World', 'From: '. \$from); var_dump(\$x);"
 #/etc/ssmtp/ssmtp.conf
 
-# Install xdebug
-
-#RUN apt-get update \
-#    && echo "zend_extension=/usr/lib/php/20160303/xdebug.so" > /etc/php/7.1/mods-available/xdebug.ini \
-#    && echo "xdebug.remote_enable=on" >> /etc/php/7.1/mods-available/xdebug.ini \
-#    && echo "xdebug.remote_handler=dbgp" >> /etc/php/7.1/mods-available/xdebug.ini \
-#    && echo "xdebug.remote_port=9000" >> /etc/php/7.1/mods-available/xdebug.ini \
-#    && echo "xdebug.remote_autostart=on" >> /etc/php/7.1/mods-available/xdebug.ini \
-#    && echo "xdebug.remote_connect_back=0" >> /etc/php/7.1/mods-available/xdebug.ini \
-#    && echo "xdebug.idekey=docker" >> /etc/php/7.1/mods-available/xdebug.ini
-
 # Clean repository
 RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./bin/* /usr/local/bin/
-
-#COPY ./etc/ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf 
-# WORKDIR /usr/share/nginx/www
-# VOLUME /usr/share/nginx/www

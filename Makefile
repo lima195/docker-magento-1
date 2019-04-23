@@ -4,6 +4,7 @@
 
 MYSQL_DUMP_FILE=database.sql
 BASE_URL=http://www.imotopecas.localhost/
+HOST_IP=10.10.17.142
 
 ## CUSTOM VARS
 
@@ -13,6 +14,7 @@ BASE_URL_STORE_2=http://lojista.imotopecas.localhost/
 
 DOCKER_DIR=docker-magento-1
 
+PHP_DOCKER=docker-magento_php
 NGINX_DOCKER=docker-magento_nginx
 MYSQL_DOCKER=docker-magento_mysql
 NGINX_WEB_ROOT=/usr/share/nginx/www
@@ -28,6 +30,9 @@ MYSQL_PASS=magento
 MYSQL_DB_NAME=magento
 MYSQL_HOST=172.22.0.108
 MYSQL_PORT=3306
+
+PHP_XDEBUG_INI=/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+PHP_XDEBUG_INI_HOST_IP=$(HOST_IP)
 
 default:
 	@echo "Please, specify a task to run:"
@@ -52,6 +57,7 @@ default:
 	@echo " - make magento_set_permissions"
 	@echo " "
 	@echo " == Docker =="
+	@echo " - make php_xdebug_remote_host"
 	@echo " - make install_cron"
 	@echo " - make docker_up"
 	@echo " "
@@ -83,8 +89,7 @@ db_import_pv:
 	sudo docker exec -it $(MYSQL_DOCKER) sh -c "pv $(MYSQL_DUMP_FILE) | mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) -P $(MYSQL_PORT) $(MYSQL_DB_NAME)"
 
 db_drop_tables:
-	sudo docker exec -it $(MYSQL_DOCKER) sh -c "mysqldump --add-drop-table --no-data -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) -P $(MYSQL_PORT) | grep 'DROP TABLE' ) > ../mysql_dump/drop_all_tables.sql"
-	sudo docker exec -it $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) < ../mysql_dump/drop_all_tables.sql -P $(MYSQL_PORT)"
+	sudo docker exec -it $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) -P $(MYSQL_PORT) --silent --skip-column-names -e \"SHOW TABLES\" $(MYSQL_DB_NAME) | xargs -L1 -I% echo 'SET FOREIGN_KEY_CHECKS = 0; DROP TABLE %;' | mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -v $(MYSQL_DB_NAME)"
 
 magento_update_baseurl:
 	sudo docker exec -it $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) -e \"UPDATE core_config_data SET value = '$(BASE_URL)' WHERE path in ('web/unsecure/base_url', 'web/secure/base_url')\"" -P $(MYSQL_PORT)
@@ -114,6 +119,10 @@ magento_cron_setup:
 install_cron:
 	sudo docker exec -it $(NGINX_DOCKER) sh -c "apt-get update; apt-get install -y cron; apt-get install -y vim; export VISUAL=vim;"
 
+php_xdebug_remote_host:
+	sudo docker exec -it $(PHP_DOCKER) sh -c "head -n -1  $(PHP_XDEBUG_INI) > new_xdebug.ini ; mv new_xdebug.ini $(PHP_XDEBUG_INI)"
+	sudo docker exec -it $(PHP_DOCKER) sh -c 'echo "xdebug.remote_host=$(PHP_XDEBUG_INI_HOST_IP)" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
+
 docker_up:
 	sudo docker-compose up -d
 
@@ -122,6 +131,7 @@ setup_magento:
 	make magento_create_localxml
 	make magento_magerun_install
 	make magento_set_permissions
+	make php_xdebug_remote_host
 	make magento_magerun_create_admin
 # 	make magento_cron_setup
 
@@ -129,7 +139,7 @@ install:
 	make docker_up
 	make db_install_pv
 	make db_import_pv
-	make install_cron
+	# make install_cron
 	make setup_magento
 
 PHONY: \
@@ -143,6 +153,7 @@ PHONY: \
 	magento_magerun_create_admin \
 	magento_cron_setup \
 	install_cron \
+	php_xdebug_remote_host \
 	docker_up \
 	magento_clear_cache \
 	magento_set_permissions \
