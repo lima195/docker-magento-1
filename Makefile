@@ -4,7 +4,7 @@
 
 MYSQL_DUMP_FILE=database.sql
 BASE_URL=http://www.imotopecas.localhost/
-HOST_IP=10.10.17.142
+HOST_IP=10.10.17.142 # /sbin/ip route|awk '/default/ { print $3 }'
 
 ## CUSTOM VARS
 
