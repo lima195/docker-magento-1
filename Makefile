@@ -98,12 +98,12 @@ magento_create_localxml:
 	sudo docker cp $(MAGENTO_LOCAL_XML) $(NGINX_DOCKER):/$(MAGENTO_LOCAL_XML_TO);
 
 magento_magerun_install:
-	sudo docker exec -it $(NGINX_DOCKER) sh -c "apt-get update; apt-get install -y php php-mysql php-xml;"
-	sudo docker cp bin/$(MAGENTO_MAGERUN) $(NGINX_DOCKER):$(NGINX_WEB_ROOT)/$(MAGENTO_MAGERUN);
-	sudo docker cp bin/$(MAGENTO_MAGERUN) $(NGINX_DOCKER):$(MAGENTO_MAGERUN_TO)/$(MAGENTO_MAGERUN);
+	# sudo docker exec -it $(NGINX_DOCKER) sh -c "apt-get update; apt-get install -y php php-mysql php-xml;"
+	sudo docker cp bin/$(MAGENTO_MAGERUN) $(PHP_DOCKER):$(NGINX_WEB_ROOT)/$(MAGENTO_MAGERUN);
+	sudo docker cp bin/$(MAGENTO_MAGERUN) $(PHP_DOCKER):$(MAGENTO_MAGERUN_TO)/$(MAGENTO_MAGERUN);
 
 magento_magerun_create_admin:
-	sudo docker exec -it $(NGINX_DOCKER) sh -c "cd $(NGINX_WEB_ROOT)/; $(MAGENTO_MAGERUN) admin:user:create"
+	sudo docker exec -it $(PHP_DOCKER) sh -c "cd $(NGINX_WEB_ROOT)/; $(MAGENTO_MAGERUN) admin:user:create"
 
 magento_clear_cache:
 	sudo docker exec -it $(NGINX_DOCKER) sh -c "cd $(NGINX_WEB_ROOT); rm -rf var/cache/*; rm -rf var/session/*;"
