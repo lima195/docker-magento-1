@@ -78,26 +78,29 @@ RUN apt-get update \
     && echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.remote_connect_back=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.idekey=docker" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.remote_host=10.10.17.142" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    && echo "xdebug.remote_host=172.22.0.1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # Mailhog
-RUN apt-get update && apt-get install -q -y ssmtp mailutils && rm -rf /var/lib/apt/lists/*
-RUN apt-get update
-RUN apt-get install -y golang-go
-RUN echo $HOME
-RUN mkdir $HOME/gocode
-RUN echo "export GOPATH=/root/gocode" >> ~/.profile
-RUN /bin/bash -c "source ~/.profile"
-RUN go get github.com/mailhog/MailHog
-RUN go get github.com/mailhog/mhsendmail
+RUN apt-get update && apt-get install -q -y ssmtp mailutils && rm -rf /var/lib/apt/lists/*  \
+    && apt-get update \ 
+    && apt-get install -y golang-go \ 
+    && echo $HOME \
+    && mkdir $HOME/gocode \
+    && echo "export GOPATH=/root/gocode" >> ~/.profile \
+    && /bin/bash -c "source ~/.profile" \
+    && go get github.com/mailhog/MailHog \
+    && go get github.com/mailhog/mhsendmail
+
 ENV GOPATH $HOME/gocode
-RUN ln /root/gocode/bin/mhsendmail /usr/local/bin/mail
-RUN ln /root/gocode/bin/mhsendmail /usr/local/bin/sendmail
-RUN ln /root/gocode/bin/mhsendmail /usr/local/bin/mhsendmail
-RUN mv /usr/bin/mail /usr/bin/mail_bkp
-RUN ln /root/gocode/bin/mhsendmail /usr/bin/mail
-RUN ln /root/gocode/bin/mhsendmail /usr/bin/sendmail
-RUN ln /root/gocode/bin/mhsendmail /usr/bin/mhsendmail
+
+RUN ln /root/gocode/bin/mhsendmail /usr/local/bin/mail \
+    && ln /root/gocode/bin/mhsendmail /usr/local/bin/sendmail \
+    && ln /root/gocode/bin/mhsendmail /usr/local/bin/mhsendmail \
+    && mv /usr/bin/mail /usr/bin/mail_bkp \
+    && ln /root/gocode/bin/mhsendmail /usr/bin/mail \
+    && ln /root/gocode/bin/mhsendmail /usr/bin/sendmail \
+    && ln /root/gocode/bin/mhsendmail /usr/bin/mhsendmail
+
 COPY ./etc/php_ini/php.ini /usr/local/etc/php/
 COPY ./etc/ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf
 # test Mailhog
