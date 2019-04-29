@@ -3,6 +3,7 @@ services:
   nginx:
     container_name: docker-magento_nginx
     image: nginx:latest
+    restart: always
     volumes:
      - ./nginx_conf/default.conf:/etc/nginx/conf.d/default.conf
      - ./nginx_conf/lojista.conf:/etc/nginx/conf.d/lojista.conf
@@ -29,6 +30,7 @@ services:
     build:
       context: .
       dockerfile: ./php/Dockerfile
+    restart: always
     volumes:
      - ../web:/usr/share/nginx/www
     working_dir: /usr/share/nginx/www
@@ -62,6 +64,7 @@ services:
   redis:
     container_name: docker-magento_redis
     image: redis
+    restart: always
     ports:
       - 6379:6379
     networks:
@@ -71,9 +74,9 @@ services:
   mail:
     container_name: docker-magento_mailhog
     image: mailhog/mailhog
-    command: ["-storage=maildir", "-maildir-path=/maildir"]
+    command: ["-storage=maildir", "-maildir-path=/tmp"]
     volumes:
-      - ./volumes/mailhog/volume:/maildir
+      - ./mailhog:/tmp
     restart: always
     ports:
       - 1025:1025
