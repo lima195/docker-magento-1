@@ -19,7 +19,7 @@ NGINX_DOCKER=docker-magento_nginx
 MYSQL_DOCKER=docker-magento_mysql
 NGINX_WEB_ROOT=/usr/share/nginx/www
 
-MAGENTO_LOCAL_XML=../$(DOCKER_DIR)/etc/magento/app/etc/local.xml
+MAGENTO_LOCAL_XML=./etc/magento/app/etc/local.xml
 MAGENTO_LOCAL_XML_TO=app/etc/local.xml
 MAGENTO_MAGERUN=n98-magerun.phar
 MAGENTO_MAGERUN_TO=/usr/local/bin
