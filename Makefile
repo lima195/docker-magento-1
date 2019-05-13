@@ -2,13 +2,13 @@
 
 ## Edit this vars:
 
-MYSQL_DUMP_FILE=database.sql
-BASE_URL=http://www.imotopecas.localhost/
-HOST_IP=10.10.17.142 # /sbin/ip route|awk '/default/ { print $3 }'
+MYSQL_DUMP_FILE=project.sql
+BASE_URL=http://paperview.localhost/
+HOST_IP=172.17.0.1 # /sbin/ip route|awk '/default/ { print $3 }'
 
 ## CUSTOM VARS
 
-BASE_URL_STORE_2=http://lojista.imotopecas.localhost/
+
 
 ## Do not edit vars above:
 
@@ -68,10 +68,6 @@ default:
 ## TASKS
 
 ## Custom Tasks
-
-magento_update_baseurl_store_2:
-	make magento_update_baseurl
-	sudo docker exec -it $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) -e \"UPDATE core_config_data SET value = '$(BASE_URL_STORE_2)' WHERE path in ('web/unsecure/base_url', 'web/secure/base_url') AND scope = 'stores' AND scope_id = '2'\"" -P $(MYSQL_PORT)
 
 
 
