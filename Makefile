@@ -138,6 +138,11 @@ install:
 	# make install_cron
 	make setup_magento
 
+install_paperview:
+	make db_install_pv
+	make db_import_pv
+	make setup_magento
+
 PHONY: \
 	db_install_pv \
 	db_import \

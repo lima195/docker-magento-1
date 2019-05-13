@@ -5,8 +5,7 @@ services:
     image: nginx:latest
     restart: always
     volumes:
-     - ./nginx_conf/default.conf:/etc/nginx/conf.d/default.conf
-     - ./nginx_conf/lojista.conf:/etc/nginx/conf.d/lojista.conf
+     - ./nginx_conf/default.conf:/etc/nginx/conf.d/nginx.conf
      - ../web:/usr/share/nginx/www
     working_dir: /usr/share/nginx/www
     ports:
