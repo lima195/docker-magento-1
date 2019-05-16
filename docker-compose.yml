@@ -17,8 +17,8 @@ services:
     links:
       - db
       - php:docker-magento_php
-      - mail
-      - redis
+      # - mail
+      # - redis
     depends_on:
       - php
     networks:
@@ -61,29 +61,29 @@ services:
       project_net:
         ipv4_address: 172.22.0.108
 
-  redis:
-    container_name: docker-magento_redis
-    image: redis
-    restart: always
-    ports:
-      - 6379:6379
-    networks:
-      project_net:
-        ipv4_address: 172.22.0.109
+  # redis:
+  #   container_name: docker-magento_redis
+  #   image: redis
+  #   restart: always
+  #   ports:
+  #     - 6379:6379
+  #   networks:
+  #     project_net:
+  #       ipv4_address: 172.22.0.109
 
-  mail:
-    container_name: docker-magento_mailhog
-    image: mailhog/mailhog
-    command: ["-storage=maildir", "-maildir-path=/tmp"]
-    volumes:
-      - ./mailhog:/tmp
-    restart: always
-    ports:
-      - 1025:1025
-      - 8025:8025
-    networks:
-      project_net:
-        ipv4_address: 172.22.0.110
+  # mail:
+  #   container_name: docker-magento_mailhog
+  #   image: mailhog/mailhog:v1.0.0
+  #   command: ["-storage=maildir", "-maildir-path=/maildir"]
+  #   volumes:
+  #     - ./volumes/mailhog/volume:/maildir
+  #   restart: always
+  #   ports:
+  #     - 1025:1025
+  #     - 8025:8025
+  #   networks:
+  #     project_net:
+  #       ipv4_address: 172.22.0.110
 
   adminer:
     container_name: docker-magento_adminer
