@@ -17,6 +17,7 @@ services:
     links:
       - db
       - php:docker-magento_php
+      # - assets
       # - mail
       # - redis
     depends_on:
@@ -29,7 +30,7 @@ services:
     container_name: docker-magento_php
     build:
       context: .
-      dockerfile: ./php/Dockerfile
+      dockerfile: ./php71/Dockerfile
     restart: always
     volumes:
      - ../web:/usr/share/nginx/www
@@ -96,6 +97,20 @@ services:
         ipv4_address: 172.22.0.112
     links:
       - db
+
+  assets:
+    container_name: docker-magento_assets
+    build:
+      context: .
+      dockerfile: ./assets/Dockerfile
+    volumes:
+     - ../web:/usr/share/nginx/www
+    ports:
+      - 9019:9019
+    tty: true
+    networks:
+      project_net:
+        ipv4_address: 172.22.0.114
 
 networks:
   project_net:
