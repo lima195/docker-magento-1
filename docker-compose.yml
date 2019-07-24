@@ -100,6 +100,7 @@ services:
 
   assets:
     container_name: docker-magento_assets
+    restart: always
     build:
       context: .
       dockerfile: ./assets/Dockerfile
