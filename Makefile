@@ -72,7 +72,7 @@ default:
 ## Custom Tasks
 
 magento_update_baseurl_myplanner:
-	sudo docker exec -it $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) -e \"UPDATE core_config_data SET value = '$(BASE_URL)' WHERE path in ('web/unsecure/base_url', 'web/secure/base_url') AND scope_id=2\"" -P $(MYSQL_PORT)
+	sudo docker exec -it $(MYSQL_DOCKER) sh -c "mysql -u $(MYSQL_USER) -p$(MYSQL_PASS) -h $(MYSQL_HOST) $(MYSQL_DB_NAME) -e \"UPDATE core_config_data SET value = 'http://myplanner.localhost/' WHERE path in ('web/unsecure/base_url', 'web/secure/base_url') AND scope_id=2\"" -P $(MYSQL_PORT)
 
 create_paperview_host:
 	sudo -- sh -c "echo '172.22.0.102 paperview.localhost' >> /etc/hosts";
