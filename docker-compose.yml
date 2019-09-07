@@ -19,7 +19,7 @@ services:
     depends_on:
       - php
     networks:
-      project_net:
+      project_wordpress_net:
         ipv4_address: 172.22.0.102
 
   php:
@@ -34,7 +34,7 @@ services:
     ports:
       - 9000:9000
     networks:
-      project_net:
+      project_wordpress_net:
         ipv4_address: 172.22.0.104
     # environment:
     #   XDEBUG_CONFIG: remote_host=172.22.0.104 #docker network ip.
@@ -55,7 +55,7 @@ services:
     ports:
       - 3306:3306
     networks:
-      project_net:
+      project_wordpress_net:
         ipv4_address: 172.22.0.108
 
   adminer:
@@ -65,13 +65,13 @@ services:
     ports:
       - 8222:8080
     networks:
-      project_net:
+      project_wordpress_net:
         ipv4_address: 172.22.0.112
     links:
       - db
 
 networks:
-  project_net:
+  project_wordpress_net:
     ipam:
       driver: default
       config:
